@@ -15,6 +15,10 @@ import {
 
 const router = express.Router();
 
+console.log(">>> userRoutes.js loaded");
+router.get("/_health", (req, res) => res.json({ ok: true, route: "/api/user/_health" }));
+
+
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);

@@ -23,7 +23,7 @@ reminderScheduler();
 
 app.use(
     cors({
-      origin: ["http://localhost:3000", "http://localhost:3001","https://taskify-lyart-five.vercel.app","*"],
+      origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173", "https://taskify-lyart-five.vercel.app"],
       methods: ["GET", "POST", "DELETE", "PUT"],
       credentials: true,
     })

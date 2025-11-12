@@ -7,7 +7,7 @@ export default defineConfig({
 
   server:{
     port :3000,
-    Proxy :{
+    proxy :{
       "/api":{
         target:"https://taskify-jhhu.onrender.com",
         changeOrigin: true,

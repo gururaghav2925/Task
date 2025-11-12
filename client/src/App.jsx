@@ -1,7 +1,6 @@
 
 import { Transition } from "@headlessui/react";
-import clsx from "clsx";
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 import { IoClose } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
@@ -45,7 +44,6 @@ function Layout() {
 
 const MobileSidebar = () => {
   const { isSidebarOpen } = useSelector((state) => state.auth);
-  const mobileMenuRef = useRef(null);
   const dispatch = useDispatch();
 
   const closeSidebar = () => {
@@ -57,38 +55,41 @@ const MobileSidebar = () => {
       <Transition
         show={isSidebarOpen}
         as={Fragment}
-        enter='transition-opacity duration-700'
-        enterFrom='opacity-x-10'
-        enterTo='opacity-x-100'
-        leave='transition-opacity duration-700'
-        leaveFrom='opacity-x-100'
-        leaveTo='opacity-x-0'
+        enter='transition-opacity duration-300'
+        enterFrom='opacity-0'
+        enterTo='opacity-100'
+        leave='transition-opacity duration-300'
+        leaveFrom='opacity-100'
+        leaveTo='opacity-0'
       >
-        {(ref) => (
-          <div
-            ref={(node) => (mobileMenuRef.current = node)}
-            className={clsx(
-              "md:hidden w-full h-full bg-black/40 transition-all duration-700 transform ",
-              isSidebarOpen ? "translate-x-0" : "translate-x-full"
-            )}
-            onClick={() => closeSidebar()}
-          >
-            <div className='bg-white w-3/4 h-full'>
-              <div className='w-full flex justify-end px-5 mt-5'>
-                <button
-                  onClick={() => closeSidebar()}
-                  className='flex justify-end items-end'
-                >
-                  <IoClose size={25} />
-                </button>
-              </div>
-
-              <div className='-mt-9'>
-                <Sidebar />
-              </div>
-            </div>
+        <div className='fixed inset-0 z-40 bg-black/40 md:hidden' onClick={closeSidebar} />
+      </Transition>
+      
+      <Transition
+        show={isSidebarOpen}
+        as={Fragment}
+        enter='transition-transform duration-300 ease-out'
+        enterFrom='-translate-x-full'
+        enterTo='translate-x-0'
+        leave='transition-transform duration-300 ease-in'
+        leaveFrom='translate-x-0'
+        leaveTo='-translate-x-full'
+      >
+        <div className='fixed left-0 top-0 h-full w-3/4 bg-white shadow-xl z-50 md:hidden'>
+          <div className='w-full flex justify-end px-5 mt-5'>
+            <button
+              onClick={closeSidebar}
+              className='flex justify-end items-end hover:bg-gray-100 p-1 rounded'
+              aria-label='Close sidebar'
+            >
+              <IoClose size={25} />
+            </button>
           </div>
-        )}
+
+          <div className='-mt-9'>
+            <Sidebar />
+          </div>
+        </div>
       </Transition>
     </>
   );

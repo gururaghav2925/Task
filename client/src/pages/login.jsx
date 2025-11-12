@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import Textbox from "../components/Textbox";
 import Button from "../components/Button";
 import Loading from "../components/Loader";
@@ -22,17 +23,19 @@ const Login = () => {
   const [login, {isLoading}] = useLoginMutation();
 
   const submitHandler = async (data) => {
-   try {
-    const result = await login(data).unwrap()
-
-    dispatch(setCredentials(result))
-    navigate("/");
-    
-   } catch (error) {
-    console.log(error)
-    toast.error(error?.data?.message || error.message); 
-    
-   }
+    try {
+      console.log("Login attempt with data:", { email: data.email });
+      const result = await login(data).unwrap();
+      console.log("Login successful, result:", result);
+      
+      dispatch(setCredentials(result));
+      toast.success("Login successful!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+      const errorMessage = error?.data?.message || error?.message || "Login failed. Please try again.";
+      toast.error(errorMessage);
+    }
   };
 
   useEffect(() => {

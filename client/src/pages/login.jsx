@@ -25,6 +25,8 @@ const Login = () => {
   const submitHandler = async (data) => {
     try {
       console.log("Login attempt with data:", { email: data.email });
+      console.log("API Base URL:", import.meta.env.VITE_APP_BASE_URL || "Using default");
+      
       const result = await login(data).unwrap();
       console.log("Login successful, result:", result);
       
@@ -32,8 +34,25 @@ const Login = () => {
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (error) {
-      console.error("Login error:", error);
-      const errorMessage = error?.data?.message || error?.message || "Login failed. Please try again.";
+      console.error("Login error details:", {
+        error,
+        status: error?.status,
+        data: error?.data,
+        message: error?.message,
+        originalStatus: error?.originalStatus,
+      });
+      
+      // Better error message handling
+      let errorMessage = "Login failed. Please try again.";
+      
+      if (error?.status === "FETCH_ERROR" || error?.status === "PARSING_ERROR") {
+        errorMessage = "Cannot connect to server. Please check your connection or contact support.";
+      } else if (error?.data?.message) {
+        errorMessage = error.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
       toast.error(errorMessage);
     }
   };
